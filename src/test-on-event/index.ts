@@ -11,7 +11,7 @@ import {
    aws_stepfunctions_tasks,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { Tester, TesterOutput, TesterProps } from '../tester/index.js';
+import { Tester, type TesterOutput, type TesterProps } from '../tester/index.js';
 import { resolveESM } from '../lib/index.js';
 
 export interface TestOnEventOutput extends TesterOutput {
@@ -28,7 +28,7 @@ export interface TestOnEventSnsEvent extends TestOnEventOutput {
     */
    timeEnd: number;
 }
-export interface TestOnEventOperationFailedSnsEvent {
+export interface TestOnEventWhenErrorSnsEvent {
    status: 'FAILED' | 'TIMED_OUT';
    /**
     * test start - epoch time in milliseconds.

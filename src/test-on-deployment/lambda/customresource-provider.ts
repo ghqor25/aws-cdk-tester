@@ -1,6 +1,6 @@
-import { CloudFormationCustomResourceEvent, CloudFormationCustomResourceSuccessResponse } from 'aws-lambda';
 import { SFNClient, StartExecutionCommand } from '@aws-sdk/client-sfn';
-import { TestOnDeploymentInput } from '../index.js';
+import type { TestOnDeploymentInput } from '../index.js';
+import type { CloudFormationCustomResourceEvent, CloudFormationCustomResourceSuccessResponse } from 'aws-lambda';
 
 const stateMachineArn = process.env.STATE_MACHINE_ARN as string;
 

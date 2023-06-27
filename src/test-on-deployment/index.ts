@@ -1,6 +1,6 @@
 import { CustomResource, Duration, aws_lambda, aws_lambda_nodejs, aws_logs, aws_stepfunctions, aws_stepfunctions_tasks } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { Tester, TesterOutput, TesterProps } from '../tester/index.js';
+import { Tester, type TesterOutput, type TesterProps } from '../tester/index.js';
 import { getOrCreateLambdaFunction, resolveESM } from '../lib/index.js';
 
 export interface TestOnDeploymentInput {

@@ -1,7 +1,7 @@
 import { CloudWatchLogsClient, CreateLogStreamCommand, PutLogEventsCommand } from '@aws-sdk/client-cloudwatch-logs';
 import { randomBytes } from 'crypto';
-import { TestOnDeploymentOutput } from '../index.js';
-import { StepFunctionsError } from '../../../type/aws-cdk/stepfunctions/index.js';
+import type { TestOnDeploymentOutput } from '../index.js';
+import type { StepFunctionsError } from '../../../type/aws-cdk/stepfunctions/index.js';
 
 type CreateLogEvent =
    | {
