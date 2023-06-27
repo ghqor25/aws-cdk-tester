@@ -54,7 +54,7 @@
     "@aws-sdk/client-cloudwatch-logs": "^3.360.0",
     "@aws-sdk/client-sfn": "^3.360.0",
     "aws-cdk-lib": "2.85.0",
-    "constructs": "^10.0.0",
+    "constructs": "^10.2.61",
     "source-map-support": "^0.5.21"
   }
 }

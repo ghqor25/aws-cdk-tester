@@ -112,7 +112,7 @@ export class TestOnDeployment extends Construct {
       }
 
       this.stateMachine = new aws_stepfunctions.StateMachine(this, 'StateMachine', {
-         definition: taskExecuteTester.next(choiceJudgeTester).next(parallelAfterTester),
+         definitionBody: aws_stepfunctions.DefinitionBody.fromChainable(taskExecuteTester.next(choiceJudgeTester).next(parallelAfterTester)),
          timeout: totalTimeOut.plus(Duration.minutes(10)),
       });
 

@@ -2549,7 +2549,7 @@ __metadata:
     aws-cdk: ^2.85.0
     aws-cdk-lib: 2.85.0
     aws-lambda: ^1.0.7
-    constructs: ^10.0.0
+    constructs: ^10.2.61
     dotenv: ^16.3.1
     esbuild: ^0.18.10
     eslint: ^8.43.0
@@ -3021,7 +3021,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"constructs@npm:^10.0.0":
+"constructs@npm:^10.2.61":
   version: 10.2.61
   resolution: "constructs@npm:10.2.61"
   checksum: ddd9b1694be864360f6070828f526b874df45afb8601fb7179d69872bdfcfc38f3d9e86187aaf49ad110882630bd9c21d9b24b41ed4a0687b021ee1707c9807a

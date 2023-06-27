@@ -198,7 +198,7 @@ export class TestOnEvent extends Construct {
       const chainJudgeTesterAndIfAfterTester = parallelAfterTester ? choiceJudgeTester.next(parallelAfterTester) : choiceJudgeTester;
 
       this.stateMachine = new aws_stepfunctions.StateMachine(this, 'StateMachine', {
-         definition: taskExecuteTester.next(chainJudgeTesterAndIfAfterTester),
+         definitionBody: aws_stepfunctions.DefinitionBody.fromChainable(taskExecuteTester.next(chainJudgeTesterAndIfAfterTester)),
          timeout: totalTimeOut.plus(Duration.minutes(10)),
       });
 

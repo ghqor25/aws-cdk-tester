@@ -114,7 +114,7 @@ export class Tester extends Construct {
       });
 
       this.stateMachine = new aws_stepfunctions.StateMachine(this, 'StateMachine', {
-         definition: parallelTestCases.next(aggregation),
+         definitionBody: aws_stepfunctions.DefinitionBody.fromChainable(parallelTestCases.next(aggregation)),
          timeout: props.totalTimeout,
       });
    }
