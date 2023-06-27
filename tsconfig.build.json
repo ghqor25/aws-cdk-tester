@@ -16,8 +16,9 @@
       "alwaysStrict": true,
       "noUnusedLocals": false,
       "noUnusedParameters": false,
-      "noImplicitReturns": true
-   },
+      "noImplicitReturns": true,
 
-   "exclude": ["node_modules", "cdk.out", "dist"]
+      "outDir": "dist"
+   },
+   "include": ["src"]
 }

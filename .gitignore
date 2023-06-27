@@ -1,8 +1,30 @@
 *.js
+*.js.map
 !jest.config.js
 *.d.ts
-node_modules
+*.generated.ts
 
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+
+# yarn non-zero install
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# folders
+coverage
+dist
+node_modules
+.vscode

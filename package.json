@@ -1,25 +1,58 @@
 {
   "name": "aws-cdk-tester",
-  "version": "0.1.0",
-  "bin": {
-    "aws-cdk-tester": "bin/aws-cdk-tester.js"
+  "version": "0.0.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "keywords": [
+    "aws",
+    "cdk",
+    "aws cdk v2",
+    "custom constructs",
+    "test",
+    "testing",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ghqor25/aws-cdk-tester.git"
   },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
-    "test": "jest",
-    "cdk": "cdk"
+    "compile": "rm -rf ./dist && tsc --project tsconfig.build.json",
+    "prepack": "yarn compile",
+    "publish": "yarn npm publish --access public",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "tsnode": "ts-node-esm --prefer-ts-exts -r tsconfig-paths/register -r source-map-support/register"
   },
   "devDependencies": {
+    "@jest/types": "^29.5.0",
+    "@types/aws-lambda": "^8.10.119",
     "@types/jest": "^29.5.1",
-    "@types/node": "20.1.7",
+    "@types/node": "^20.3.2",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "aws-cdk": "^2.85.0",
+    "aws-lambda": "^1.0.7",
+    "dotenv": "^16.3.1",
+    "esbuild": "^0.18.10",
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-jest": "^27.2.2",
+    "eslint-plugin-prettier": "^4.2.1",
     "jest": "^29.5.0",
+    "prettier": "^2.8.8",
     "ts-jest": "^29.1.0",
-    "aws-cdk": "2.85.0",
     "ts-node": "^10.9.1",
-    "typescript": "~5.0.4"
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.1.3"
   },
   "dependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3.360.0",
+    "@aws-sdk/client-sfn": "^3.360.0",
     "aws-cdk-lib": "2.85.0",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.21"
