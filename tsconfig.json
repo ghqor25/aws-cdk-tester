@@ -19,8 +19,7 @@
       "noUnusedParameters": false,
       "noImplicitReturns": true,
 
-      "outDir": "dist"
+      "baseUrl": "."
    },
-   "include": ["src", "index.ts"],
    "exclude": ["node_modules", "cdk.out", "dist"]
 }
