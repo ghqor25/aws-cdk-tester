@@ -1,4 +1,4 @@
-import type { StepFunctionsError } from '../../../type/aws-cdk/stepfunctions/index.js';
+import type { StepFunctionsError } from '../../../../type/aws-cdk/stepfunctions/index.js';
 
 export interface TestCasePass<T = any> {
    id: string;

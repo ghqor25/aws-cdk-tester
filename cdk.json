@@ -1,5 +1,5 @@
 {
-   "app": "ts-node-esm --prefer-ts-exts -r tsconfig-paths/register -r source-map-support/register bin/aws-cdk-tester.ts",
+   "app": "ts-node-esm --prefer-ts-exts -r tsconfig-paths/register -r source-map-support/register bin/index.ts",
    "lookups": false,
    "watch": {
       "include": ["**"],

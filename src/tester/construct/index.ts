@@ -1,7 +1,7 @@
 import { Duration, aws_lambda, aws_lambda_nodejs, aws_stepfunctions, aws_stepfunctions_tasks } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import type { AggregationResponse } from './lambda/aggregation.js';
-import { findDuplicatedFirst, getOrCreateLambdaFunction, resolveESM } from '../lib/index.js';
+import { findDuplicatedFirst, getOrCreateLambdaFunction, resolveESM } from '../../lib/index.js';
 
 export interface TesterOutput extends AggregationResponse {}
 

@@ -1,4 +1,4 @@
-import { Duration, Stack, StackProps, aws_events, aws_lambda, aws_lambda_nodejs, aws_logs, aws_scheduler, aws_sns, aws_sns_subscriptions } from 'aws-cdk-lib';
+import { Duration, Stack, type StackProps, aws_events, aws_lambda, aws_lambda_nodejs, aws_logs, aws_sns, aws_sns_subscriptions } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { resolveESM } from '../../src/lib/index.js';
 import { TestOnEvent } from '../../src/test-on-event/index.js';
