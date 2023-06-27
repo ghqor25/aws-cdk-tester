@@ -1,1 +1,1 @@
-export * from './singleton/index.js';
+export * from './singleton.js';

@@ -1,6 +1,6 @@
 import type { CloudFormationCustomResourceFailedResponse, CloudFormationCustomResourceSuccessResponse } from 'aws-lambda';
 import type { TestOnDeploymentInput, TestOnDeploymentOutput } from '../index.js';
-import type { StepFunctionsError } from '../../../../type/aws-cdk/stepfunctions/index.js';
+import type { StepFunctionsError } from '../../../lib/index.js';
 
 type ResponseCloudformationEvent =
    | {

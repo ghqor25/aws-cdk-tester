@@ -1,4 +1,4 @@
-import { findDuplicatedFirst } from './index.js';
+import { findDuplicatedFirst } from './duplicated.js';
 
 describe('findDuplicatedFirst', () => {
    test('correct test', () => {

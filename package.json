@@ -19,7 +19,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "rm -rf ./dist && tsc --project tsconfig.build.json",
+    "prepublish": "rm -rf ./dist && tsc --project tsconfig.json",
     "publish": "yarn npm publish --access public",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "tsnode": "ts-node-esm --prefer-ts-exts -r tsconfig-paths/register -r source-map-support/register"

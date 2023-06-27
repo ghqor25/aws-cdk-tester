@@ -1,1 +1,1 @@
-export * from './duplicated/index.js';
+export * from './duplicated.js';

@@ -1,1 +1,1 @@
-export * from './resolve/index.js';
+export * from './resolve.js';
