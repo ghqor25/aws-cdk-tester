@@ -152,10 +152,15 @@ You can use SNS topic subscription filter with message attributes.
 ```
 messageAttributes: {
    status: 'SUCCEEDED' | 'FAILED';
+   // number of total testCases
    total: number;
+   // number of passed testCases
    pass: number;
+   // number of failed testCases
    failTotal: number;
+   // number of failed testCases(with required:true)
    failRequired: number;
+   // number of failed testCases(with required:false)
    failOptional: number;
 }
 ```
