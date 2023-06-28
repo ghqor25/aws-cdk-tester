@@ -2,19 +2,21 @@
 It's Custom Construct using StepFunctions to test things.
 
 Tester do one test with multiple `testCase`s in parallel.
+
 Each `testCase` execute  multiple `step`s(1 step = 1 lambda function) in sequential. 
+
 When lambda function throw error(like assertion error), the `testCase` is considered as `fail`.
 When the `testCase`'s lambda functions are all passed(return anything), the `testCase` is considered as `pass`.
 
-So, When more than 1 `testCase`(with required: true) fail, the whole test considered as `FAILED`. 
+So, When more than 1 `testCase`s(with required: true) fail, the whole test considered as `FAILED`. 
 Otherwise, considered as `SUCCEEDED`.
 
-It has two mode. `TestInDeployment` and `TestInEvent`.
+It has two modes. `TestInDeployment` and `TestInEvent`.
 
-## TestInDeployment
-`TestInDeployment` do test in stack deployment(using custom resource).
-When Tester `FAILED`, stack deployment will fail, and rollback will proceed.
-you can use it for neccessary integration test before deployment done.
+## TestOnDeployment
+`TestOnDeployment` do test in stack deployment(using custom resource).
+When Tester `FAILED`, stack deployment will fail, and stack rollback will proceed.
+You can use it for neccessary integration test before deployment done.
 
 It offers optional properties, logGroup(put logs about the test result).
 
@@ -76,13 +78,13 @@ new TestOnDeployment(this, 'TestOnDeployment', {
 });
 ```
 
-## TestInEvent
-`TestInEvent` do test in scheduled date.(using aws_events.Schedule)
-you can use it for regular tests in specific time.
+## TestOnEvent
+`TestOnEvent` do test in scheduled date(using aws_events.Schedule).
+You can use it for regular tests in specific time.
 
 It offers optional properties, logGroup(put logs about the test result), 
 snsTopic(publish when test done), 
-snsTopicWhenError(publish when test could not finished because of an Error.(ex. TIMED_OUT))
+snsTopicWhenError(publish when test could not finished because of an Error(ex. TIMED_OUT)).
 
 ```
 new TestOnEvent(this, 'TestOnEvent', {
