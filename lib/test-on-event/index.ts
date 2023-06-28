@@ -15,7 +15,7 @@ export class StackDescribeTestOnEvent extends Stack {
       snsTopicSucceeded.addSubscription(
          new aws_sns_subscriptions.LambdaSubscription(
             new aws_lambda_nodejs.NodejsFunction(this, 'snsTopicSucceededStatus-Lambda', {
-               entry: resolveESM(import.meta, 'lambda', 'test-success.ts'),
+               entry: resolveESM(import.meta, 'lambda', 'test-success'),
                runtime: aws_lambda.Runtime.NODEJS_18_X,
                bundling: { format: aws_lambda_nodejs.OutputFormat.ESM, minify: true, target: 'es2022' },
             }),
@@ -52,6 +52,7 @@ export class StackDescribeTestOnEvent extends Stack {
             {
                id: 'Succeeded-test1',
                required: false,
+               input: { test1: 'hello', testarn: snsTopicWhenError.topicArn },
                steps: [
                   {
                      interval: Duration.seconds(3),
@@ -173,6 +174,7 @@ export class StackDescribeTestOnEvent extends Stack {
             {
                id: 'Failed-test1',
                required: false,
+               input: { test2: 'hello' },
                steps: [
                   {
                      interval: Duration.seconds(3),
@@ -275,6 +277,7 @@ export class StackDescribeTestOnEvent extends Stack {
             {
                id: 'Error-test1',
                required: false,
+               input: { test3: 'hello' },
                steps: [
                   {
                      interval: Duration.seconds(3),

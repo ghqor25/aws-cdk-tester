@@ -1,7 +1,7 @@
 import { Duration, Stack, type StackProps, aws_lambda, aws_lambda_nodejs, aws_logs } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { resolveESM } from '../../src/lib/index.js';
-import { TestOnDeployment } from 'index.js';
+import { TestOnDeployment } from '../../src/test-on-deployment/construct/index.js';
 
 export interface StackDescribeTestOnDeploymentSucceededProps extends StackProps {}
 

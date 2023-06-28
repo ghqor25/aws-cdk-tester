@@ -1,1 +1,1 @@
-export { TestOnDeployment, type TestOnDeploymentProps } from './construct/index.js';
+export * from './construct/index.js';

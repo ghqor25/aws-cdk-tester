@@ -11,11 +11,6 @@ export interface TestCase {
     */
    id: string;
    /**
-    * If this case is required to succeed, set true.
-    * @default true
-    */
-   required?: boolean;
-   /**
     * Steps in a single test case.
     */
    steps: {
@@ -33,6 +28,15 @@ export interface TestCase {
        */
       interval?: Duration;
    }[];
+   /**
+    * If this case is required to succeed, set true.
+    * @default true
+    */
+   required?: boolean;
+   /**
+    * If you set input variables, it will pass to first step's lambda function as an event.
+    */
+   input?: Record<string, any>;
 }
 
 export interface TesterProps {
@@ -100,7 +104,7 @@ export class Tester extends Construct {
                      }),
                   );
                else throw new Error('Index error. It should not happen. Please let me know.');
-            }, undefined as unknown as aws_stepfunctions.INextable & aws_stepfunctions.IChainable),
+            }, (testCase.input ? new aws_stepfunctions.Pass(this, `Input-${testCase.id}`, { parameters: testCase.input }) : undefined) as unknown as aws_stepfunctions.INextable & aws_stepfunctions.IChainable),
          ),
       );
 
