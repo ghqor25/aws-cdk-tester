@@ -1,7 +1,7 @@
 # AWS CDK TESTER (CDK CUSTOM CONSTRUCT)
 It's Custom Construct using StepFunctions to test things.
 
-Tester do one test with multiple `testCase`s in parallel.
+Tester do a single test with multiple `testCase`s in parallel.
 
 Each `testCase` execute  multiple `step`s(1 step = 1 lambda function) in sequential. 
 
@@ -144,4 +144,25 @@ new TestOnEvent(this, 'TestOnEvent', {
       },
    ],
 });
+```
+
+You can use SNS topic subscription filter with message attributes.
+
++ For snsTopic
+```
+messageAttributes: {
+   status: 'SUCCEEDED' | 'FAILED';
+   total: number;
+   pass: number;
+   failTotal: number;
+   failRequired: number;
+   failOptional: number;
+}
+```
+
++ For snsTopicWhenError
+```
+messageAttributes: {
+   status: 'FAILED' | 'TIMED_OUT';
+}
 ```
