@@ -1,14 +1,145 @@
-# Welcome to your CDK TypeScript project
+# AWS CDK TESTER (CDK CUSTOM CONSTRUCT)
+It's Custom Construct using StepFunctions to test things.
 
-This is a blank project for CDK development with TypeScript.
+Tester do one test with multiple `testCase`s in parallel.
+Each `testCase` execute  multiple `step`s(1 step = 1 lambda function) in sequential. 
+When lambda function throw error(like assertion error), the `testCase` is considered as `fail`.
+When the `testCase`'s lambda functions are all passed(return anything), the `testCase` is considered as `pass`.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+So, When more than 1 `testCase`(with required: true) fail, the whole test considered as `FAILED`. 
+Otherwise, considered as `SUCCEEDED`.
 
-## Useful commands
+It has two mode. `TestInDeployment` and `TestInEvent`.
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+## TestInDeployment
+`TestInDeployment` do test in stack deployment(using custom resource).
+When Tester `FAILED`, stack deployment will fail, and rollback will proceed.
+you can use it for neccessary integration test before deployment done.
+
+It offers optional properties, logGroup(put logs about the test result).
+
+```
+new TestOnDeployment(this, 'TestOnDeployment', {
+   logGroup: new aws_logs.LogGroup(this, 'LogGroup'),
+   totalTimeout: Duration.hours(1),
+   testCases: [
+      {
+         id: 'TestOnDeployment-test1',
+         required: false,
+         steps: [
+            {
+               interval: Duration.seconds(3),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnDeployment-test1-step1'),
+            },
+            {
+               interval: Duration.seconds(3),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnDeployment-test1-step2'),
+            },
+            {
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnDeployment-test1-step3'),
+            },
+         ],
+      },
+      {
+         id: 'TestOnDeployment-test2',
+         steps: [
+            {
+               interval: Duration.seconds(3),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnDeployment-test2-step1'),
+            },
+            {
+               interval: Duration.seconds(3),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnDeployment-test2-step2'),
+            },
+            {
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnDeployment-test2-step3'),
+            },
+         ],
+      },
+      {
+         id: 'TestOnDeployment-test3',
+         steps: [
+            {
+               interval: Duration.seconds(3),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnDeployment-test3-step1'),
+            },
+            {
+               interval: Duration.seconds(3),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnDeployment-test3-step2'),
+            },
+            {
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnDeployment-test3-step3'),
+            },
+         ],
+      },
+   ],
+});
+```
+
+## TestInEvent
+`TestInEvent` do test in scheduled date.(using aws_events.Schedule)
+you can use it for regular tests in specific time.
+
+It offers optional properties, logGroup(put logs about the test result), 
+snsTopic(publish when test done), 
+snsTopicWhenError(publish when test could not finished because of an Error.(ex. TIMED_OUT))
+
+```
+new TestOnEvent(this, 'TestOnEvent', {
+   snsTopic: new aws_sns.Topic(this, 'SnsTopic'),
+   snsTopicWhenError: new aws_sns.Topic(this, 'SnsTopicWhenError'),
+   logGroup: new aws_logs.LogGroup(this, 'LogGroup'),
+   schedule: aws_events.Schedule.rate(Duration.hours(1)),
+   testCases: [
+      {
+         id: 'TestOnEvent-test1',
+         required: false,
+         steps: [
+            {
+               interval: Duration.seconds(3),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnEvent-test1-step1'),
+            },
+            {
+               interval: Duration.seconds(3),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnEvent-test1-step2'),
+            },
+            {
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnEvent-test1-step3'),
+            },
+         ],
+      },
+      {
+         id: 'TestOnEvent-test2',
+         steps: [
+            {
+               interval: Duration.seconds(3),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnEvent-test2-step1'),
+            },
+            {
+               interval: Duration.seconds(3),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnEvent-test2-step2'),
+            },
+            {
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnEvent-test2-step3'),
+            },
+         ],
+      },
+      {
+         id: 'TestOnEvent-test3',
+         steps: [
+            {
+               interval: Duration.seconds(3),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnEvent-test3-step1'),
+            },
+            {
+               interval: Duration.seconds(3),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnEvent-test3-step2'),
+            },
+            {
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'TestOnEvent-test3-step3'),
+            },
+         ],
+      },
+   ],
+});
+```
