@@ -47,7 +47,7 @@ export interface TestOnEventProps extends Pick<TesterProps, 'testCases'> {
    schedule: aws_events.Schedule;
    /**
     * Overall timeout.
-    * @default Duration.hours(1)
+    * @default no timeout.
     */
    totalTimeout?: Duration;
    /**
@@ -69,9 +69,8 @@ export class TestOnEvent extends Construct {
    public readonly stateMachine: aws_stepfunctions.StateMachine;
    constructor(scope: Construct, id: string, props: TestOnEventProps) {
       super(scope, id);
-      const totalTimeOut = props.totalTimeout ?? Duration.hours(1);
 
-      this.testerStateMachine = new Tester(this, 'Tester', { testCases: props.testCases, totalTimeout: totalTimeOut }).stateMachine;
+      this.testerStateMachine = new Tester(this, 'Tester', { testCases: props.testCases, totalTimeout: props.totalTimeout }).stateMachine;
 
       const failExecuteTester = new aws_stepfunctions.Pass(this, 'Fail-ExecuteTester', {
          parameters: { Output: aws_stepfunctions.JsonPath.stringToJson(aws_stepfunctions.JsonPath.stringAt('$.Cause')) },
@@ -81,7 +80,7 @@ export class TestOnEvent extends Construct {
       const taskExecuteTester = new aws_stepfunctions_tasks.StepFunctionsStartExecution(this, 'Task-ExecuteTester', {
          stateMachine: this.testerStateMachine,
          integrationPattern: aws_stepfunctions.IntegrationPattern.RUN_JOB,
-         taskTimeout: aws_stepfunctions.Timeout.duration(totalTimeOut.plus(Duration.minutes(2))),
+         taskTimeout: props.totalTimeout ? aws_stepfunctions.Timeout.duration(props.totalTimeout.plus(Duration.minutes(2))) : undefined,
       }).addCatch(failExecuteTester);
 
       const choiceJudgeTester = new aws_stepfunctions.Choice(this, 'Choice-JudgeTester')
@@ -199,7 +198,7 @@ export class TestOnEvent extends Construct {
 
       this.stateMachine = new aws_stepfunctions.StateMachine(this, 'StateMachine', {
          definitionBody: aws_stepfunctions.DefinitionBody.fromChainable(taskExecuteTester.next(chainJudgeTesterAndIfAfterTester)),
-         timeout: totalTimeOut.plus(Duration.minutes(10)),
+         timeout: props.totalTimeout ? props.totalTimeout.plus(Duration.minutes(10)) : undefined,
       });
 
       const roleStartExecution = new aws_iam.Role(this, 'StartExecution-Role', { assumedBy: new aws_iam.ServicePrincipal('scheduler.amazonaws.com') });

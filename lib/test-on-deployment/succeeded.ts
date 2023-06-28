@@ -11,6 +11,7 @@ export class StackDescribeTestOnDeploymentSucceeded extends Stack {
 
       new TestOnDeployment(this, 'TestOnDeployment', {
          logGroup: new aws_logs.LogGroup(this, 'LogGroup'),
+         totalTimeout: Duration.hours(1),
          testCases: [
             {
                id: 'Succeeded-test1',
