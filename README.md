@@ -154,13 +154,13 @@ messageAttributes: {
    status: 'SUCCEEDED' | 'FAILED';
    // number of total testCases
    total: number;
-   // number of passed testCases
+   // number of passed only testCases
    pass: number;
-   // number of failed testCases
+   // number of failed only testCases(total)
    failTotal: number;
-   // number of failed testCases(with required:true)
+   // number of failed only testCases(with required:true)
    failRequired: number;
-   // number of failed testCases(with required:false)
+   // number of failed only testCases(with required:false)
    failOptional: number;
 }
 ```
