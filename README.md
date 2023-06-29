@@ -3,7 +3,8 @@ It's Custom Construct using StepFunctions to test things.
 
 Tester do a single test with multiple `testCase`s in parallel.
 
-Each `testCase` execute  multiple `step`s(1 step = 1 lambda function) in sequential. 
+Each `testCase` execute  multiple `step`s(1 step = 1 lambda function) in sequential
+(When lambda return any value, it will be passed as an event to next step's lambda). 
 
 When lambda function throw error(like assertion error), the `testCase` is considered as `fail`.
 When the `testCase`'s lambda functions are all passed(return anything), the `testCase` is considered as `pass`.
