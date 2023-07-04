@@ -1,6 +1,5 @@
 # AWS CDK TESTER (CDK CUSTOM CONSTRUCT)
-It's Custom Construct using StepFunctions to test things in aws cdk.
-For many tests, I thought using lambda and @aws-sdk/* is easy and clean way.
+It's Custom Construct internally using StepFunctions and test things with lambda functions.
 
 Tester do a single test with multiple `testCase`s in parallel.
 
@@ -14,7 +13,8 @@ So, When more than 1 `testCase`s(with required: true) fail, the whole test consi
 Otherwise, considered as `SUCCEEDED`.
 
 #### TESTCASE EXAMPLE
-Step1. Publish Sns (Return value that should be put into Dynamodb. It will be passed to Step2's lambda function as event input)
+Step1. Publish Sns (In lambda, return value that should be put into Dynamodb. It will be passed to Step2's lambda function as event input)
+
 Step2. Check if Dynamodb item has correctly put in 5 seconds.(use any assertion library in lambda.)
 
 ```
