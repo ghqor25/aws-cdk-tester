@@ -38,14 +38,12 @@ export interface TestOnDeploymentProps extends Pick<TesterProps, 'testCases'> {
  * If the test has FAILED, the stack will be ROLLBACK.
  */
 export class TestOnDeployment extends Construct {
-   public readonly testerStateMachine: aws_stepfunctions.StateMachine;
-   public readonly stateMachine: aws_stepfunctions.StateMachine;
    constructor(scope: Construct, id: string, props: TestOnDeploymentProps) {
       super(scope, id);
       const totalTimeOut = props.totalTimeout ?? Duration.hours(1);
       const classId = 'TestOnDeployment';
 
-      this.testerStateMachine = new Tester(this, 'Tester', { testCases: props.testCases, totalTimeout: totalTimeOut }).stateMachine;
+      const testerStateMachine = new Tester(this, 'Tester', { testCases: props.testCases, totalTimeout: totalTimeOut }).stateMachine;
 
       const failExecuteTester = new aws_stepfunctions.Pass(this, 'Fail-ExecuteTester', {
          parameters: { Output: aws_stepfunctions.JsonPath.stringToJson(aws_stepfunctions.JsonPath.stringAt('$.Cause')) },
@@ -53,7 +51,7 @@ export class TestOnDeployment extends Construct {
       });
 
       const taskExecuteTester = new aws_stepfunctions_tasks.StepFunctionsStartExecution(this, 'Task-ExecuteTester', {
-         stateMachine: this.testerStateMachine,
+         stateMachine: testerStateMachine,
          integrationPattern: aws_stepfunctions.IntegrationPattern.RUN_JOB,
          taskTimeout: aws_stepfunctions.Timeout.duration(totalTimeOut.plus(Duration.minutes(2))),
       }).addCatch(failExecuteTester);
@@ -116,7 +114,7 @@ export class TestOnDeployment extends Construct {
          parallelAfterTester.branch(taskCreateLog);
       }
 
-      this.stateMachine = new aws_stepfunctions.StateMachine(this, 'StateMachine', {
+      const stateMachine = new aws_stepfunctions.StateMachine(this, 'StateMachine', {
          definitionBody: aws_stepfunctions.DefinitionBody.fromChainable(taskExecuteTester.next(choiceJudgeTester).next(parallelAfterTester)),
          timeout: totalTimeOut.plus(Duration.minutes(10)),
       });
@@ -125,9 +123,9 @@ export class TestOnDeployment extends Construct {
          entry: resolveESM(import.meta, 'lambda', 'customresource-provider.ts'),
          runtime: aws_lambda.Runtime.NODEJS_18_X,
          bundling: { format: aws_lambda_nodejs.OutputFormat.ESM, minify: true, target: 'es2022' },
-         environment: { STATE_MACHINE_ARN: this.stateMachine.stateMachineArn },
+         environment: { STATE_MACHINE_ARN: stateMachine.stateMachineArn },
       });
-      this.stateMachine.grantStartExecution(customResourceProviderLambda);
+      stateMachine.grantStartExecution(customResourceProviderLambda);
 
       new CustomResource(this, 'CustomResource', {
          serviceToken: customResourceProviderLambda.functionArn,

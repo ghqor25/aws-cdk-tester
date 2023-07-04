@@ -68,12 +68,10 @@ export interface TestOnEventProps extends Pick<TesterProps, 'testCases'> {
  * Do test on scheduled date.
  */
 export class TestOnEvent extends Construct {
-   public readonly testerStateMachine: aws_stepfunctions.StateMachine;
-   public readonly stateMachine: aws_stepfunctions.StateMachine;
    constructor(scope: Construct, id: string, props: TestOnEventProps) {
       super(scope, id);
 
-      this.testerStateMachine = new Tester(this, 'Tester', { testCases: props.testCases, totalTimeout: props.totalTimeout }).stateMachine;
+      const testerStateMachine = new Tester(this, 'Tester', { testCases: props.testCases, totalTimeout: props.totalTimeout }).stateMachine;
 
       const failExecuteTester = new aws_stepfunctions.Pass(this, 'Fail-ExecuteTester', {
          parameters: { Output: aws_stepfunctions.JsonPath.stringToJson(aws_stepfunctions.JsonPath.stringAt('$.Cause')) },
@@ -81,7 +79,7 @@ export class TestOnEvent extends Construct {
       });
 
       const taskExecuteTester = new aws_stepfunctions_tasks.StepFunctionsStartExecution(this, 'Task-ExecuteTester', {
-         stateMachine: this.testerStateMachine,
+         stateMachine: testerStateMachine,
          integrationPattern: aws_stepfunctions.IntegrationPattern.RUN_JOB,
          taskTimeout: props.totalTimeout ? aws_stepfunctions.Timeout.duration(props.totalTimeout.plus(Duration.minutes(2))) : undefined,
       }).addCatch(failExecuteTester);
@@ -199,18 +197,18 @@ export class TestOnEvent extends Construct {
 
       const chainJudgeTesterAndIfAfterTester = parallelAfterTester ? choiceJudgeTester.next(parallelAfterTester) : choiceJudgeTester;
 
-      this.stateMachine = new aws_stepfunctions.StateMachine(this, 'StateMachine', {
+      const stateMachine = new aws_stepfunctions.StateMachine(this, 'StateMachine', {
          definitionBody: aws_stepfunctions.DefinitionBody.fromChainable(taskExecuteTester.next(chainJudgeTesterAndIfAfterTester)),
          timeout: props.totalTimeout ? props.totalTimeout.plus(Duration.minutes(10)) : undefined,
       });
 
       const roleStartExecution = new aws_iam.Role(this, 'StartExecution-Role', { assumedBy: new aws_iam.ServicePrincipal('scheduler.amazonaws.com') });
-      this.stateMachine.grantStartExecution(roleStartExecution);
+      stateMachine.grantStartExecution(roleStartExecution);
       new aws_scheduler.CfnSchedule(this, 'StartExecution-Schedule', {
          scheduleExpression: props.schedule.expressionString,
          flexibleTimeWindow: { mode: 'OFF' } satisfies aws_scheduler.CfnSchedule.FlexibleTimeWindowProperty,
          target: {
-            arn: this.stateMachine.stateMachineArn,
+            arn: stateMachine.stateMachineArn,
             roleArn: roleStartExecution.roleArn,
          } satisfies aws_scheduler.CfnSchedule.TargetProperty,
       });
