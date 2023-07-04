@@ -1,5 +1,6 @@
 # AWS CDK TESTER (CDK CUSTOM CONSTRUCT)
-It's Custom Construct using StepFunctions to test things.
+It's Custom Construct using StepFunctions to test things in aws cdk.
+For many tests, I thought using lambda and @aws-sdk/* is easy and clean way.
 
 Tester do a single test with multiple `testCase`s in parallel.
 
@@ -11,6 +12,28 @@ When the `testCase`'s lambda functions are all passed(return anything), the `tes
 
 So, When more than 1 `testCase`s(with required: true) fail, the whole test considered as `FAILED`. 
 Otherwise, considered as `SUCCEEDED`.
+
+#### TESTCASE EXAMPLE
+Step1. Publish Sns (Return value that should be put into Dynamodb. It will be passed to Step2's lambda function as event input)
+Step2. Check if Dynamodb item has correctly put in 5 seconds.(use any assertion library in lambda.)
+
+```
+testCases: [
+      {
+         id: 'Test1',
+         steps: [
+            {
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'sns-publish'),
+            },
+            {
+               interval: Duration.seconds(5),
+               lambdaFunction: new aws_lambda_nodejs.NodejsFunction(this, 'check-dynamodb'),
+            },
+         ],
+      },
+   ],
+```
+
 
 It has two modes. `TestInDeployment` and `TestInEvent`.
 
