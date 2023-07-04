@@ -7,7 +7,9 @@ export interface TesterOutput extends AggregationResponse {}
 
 export interface TestCase {
    /**
-    * Identifier of testCase. Should be unique.
+    * Identifier of testCase. Should be unique in all defined testCases.
+    *
+    * Recommend to name it recognizable, so you can know which test is.
     */
    id: string;
    /**
@@ -15,26 +17,26 @@ export interface TestCase {
     */
    steps: {
       /**
-       * If lambda throws any error thrown(like assertion error), the test case will result in FAIL.
+       * If lambda throws any error thrown(like assertion error), the test case will result in `fail`.
        *
-       * If lambda returns anything, it will be regarded as pass.
-       * The returned payload will be passed to next step's lambda event payload
-       * When all steps are passed, the test case will result in PASS.
+       * If lambda returns anything, returned payload will be passed to next step's lambda event input.
        */
       lambdaFunction: aws_lambda.IFunction;
       /**
-       * Interval before it invokes this step.
-       * If not set, it will invoke immediately.
+       * Interval before invoking this step.
+       * If not set, the step will be invoked immediately.
        */
       interval?: Duration;
    }[];
    /**
     * If this case is required to succeed, set true.
+    *
+    * If set false, the test will not be FAILED even if this testCase is `fail`
     * @default true
     */
    required?: boolean;
    /**
-    * If you set input variables, it will pass to first step's lambda function as an event.
+    * If you set input variables, it will pass to first step's lambda function as an event input.
     */
    input?: Record<string, any>;
 }
@@ -42,7 +44,7 @@ export interface TestCase {
 export interface TesterProps {
    /**
     * Test cases will be tested in parallel.
-    * Each test case will be result in PASS or FAIL.
+    * Each test case will be result in `pass` or `fail`.
     */
    testCases: TestCase[];
    /**
@@ -52,6 +54,10 @@ export interface TesterProps {
    totalTimeout?: Duration;
 }
 
+/**
+ * Internal tester, do test and aggregate results.
+ * @internal
+ */
 export class Tester extends Construct {
    public readonly stateMachine: aws_stepfunctions.StateMachine;
 

@@ -18,26 +18,26 @@ export interface TestOnEventOutput extends TesterOutput {
    status: 'SUCCEEDED' | 'FAILED';
 }
 
-export interface TestOnEventSnsEvent extends TestOnEventOutput {
+interface TestOnEventSnsEventDefault {
    /**
-    * test start - epoch time in milliseconds.
+    * test start time - epoch time in milliseconds.
     */
    timeStart: number;
    /**
-    * test end - epoch time in milliseconds.
+    * test end time - epoch time in milliseconds.
     */
    timeEnd: number;
 }
-export interface TestOnEventWhenErrorSnsEvent {
+
+/**
+ * Sns publish message body when test done.
+ */
+export interface TestOnEventSnsEvent extends TestOnEventOutput, TestOnEventSnsEventDefault {}
+/**
+ * Sns publish message body when error occur(ex. TIMED_OUT).
+ */
+export interface TestOnEventWhenErrorSnsEvent extends TestOnEventSnsEventDefault {
    status: 'FAILED' | 'TIMED_OUT';
-   /**
-    * test start - epoch time in milliseconds.
-    */
-   timeStart: number;
-   /**
-    * test end - epoch time in milliseconds.
-    */
-   timeEnd: number;
 }
 
 export interface TestOnEventProps extends Pick<TesterProps, 'testCases'> {
@@ -51,19 +51,22 @@ export interface TestOnEventProps extends Pick<TesterProps, 'testCases'> {
     */
    totalTimeout?: Duration;
    /**
-    * if set, it will log all tests.
+    * If set, it will automatically log each test.
     */
    logGroup?: aws_logs.ILogGroup;
    /**
-    * if set, it will publish when test done.
+    * If set, it will publish when test done.
     */
    snsTopic?: aws_sns.ITopic;
    /**
-    * if set, it will publish when error occur(ex. TIMED_OUT).
+    * If set, it will publish when error occur(ex. TIMED_OUT).
     */
    snsTopicWhenError?: aws_sns.ITopic;
 }
 
+/**
+ * Do test on scheduled date.
+ */
 export class TestOnEvent extends Construct {
    public readonly testerStateMachine: aws_stepfunctions.StateMachine;
    public readonly stateMachine: aws_stepfunctions.StateMachine;

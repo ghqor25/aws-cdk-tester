@@ -17,21 +17,26 @@ export interface TestOnDeploymentOutput extends TesterOutput {
 
 export interface TestOnDeploymentProps extends Pick<TesterProps, 'testCases'> {
    /**
-    * if true, test will proceed.
+    * If set to false, test will not proceed.
     * @default true
     */
    enabled?: boolean;
    /**
     * Overall timeout.
+    * Recommend to set timeout with your test estimated time, because it affects stack deployment time.
     * @default Duration.hours(1)
     */
    totalTimeout?: Duration;
    /**
-    * if set, it will log all tests.
+    * if set, it will automatically log each test.
     */
    logGroup?: aws_logs.ILogGroup;
 }
 
+/**
+ * Do test on stack deployment.
+ * If the test has FAILED, the stack will be ROLLBACK.
+ */
 export class TestOnDeployment extends Construct {
    public readonly testerStateMachine: aws_stepfunctions.StateMachine;
    public readonly stateMachine: aws_stepfunctions.StateMachine;
