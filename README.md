@@ -12,10 +12,10 @@ When the `testCase`'s lambda functions are all passed(return anything), the `tes
 So, When more than 1 `testCase`s(with required: true) fail, the whole test considered as `FAILED`. 
 Otherwise, considered as `SUCCEEDED`.
 
-#### TESTCASE EXAMPLE
-Step1. Publish Sns (In lambda, return value that should be put into Dynamodb. It will be passed to Step2's lambda function as event input)
+### TESTCASE EXAMPLE
+Step1. Publish Sns (In lambda, return expected value that should be put into Dynamodb. It will be passed to Step2's lambda function as an event input.)
 
-Step2. Check if Dynamodb item has correctly put in 5 seconds.(use any assertion library in lambda.)
+Step2. Check if Dynamodb item has correctly put within 5 seconds.(use any assertion library in lambda.)
 
 ```
 testCases: [
@@ -33,6 +33,7 @@ testCases: [
       },
    ],
 ```
+
 
 
 It has two modes. `TestInDeployment` and `TestInEvent`.
