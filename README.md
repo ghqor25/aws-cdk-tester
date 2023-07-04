@@ -1,15 +1,18 @@
 # AWS CDK TESTER (CDK CUSTOM CONSTRUCT)
 It's Custom Construct internally using StepFunctions and test things with lambda functions.
 
-Tester do a single test with multiple `testCase`s in parallel.
+Tester execute multiple `testCase`s in parallel at once.
 
-Each `testCase` execute  multiple `step`s(1 step = 1 lambda function) in sequential
+Each `testCase` has  multiple `step`s(1 step = 1 lambda function) in sequential
 (When lambda return any value, it will be passed as an event to next step's lambda). 
 
 When lambda function throw error(like assertion error), the `testCase` is considered as `fail`.
-When the `testCase`'s lambda functions are all passed(return anything), the `testCase` is considered as `pass`.
 
-So, When more than 1 `testCase`s(with required: true) fail, the whole test considered as `FAILED`. 
+When the `testCase`'s steps are all passed(do not throw any error), the `testCase` is considered as `pass`.
+
+
+So, When 1 or more `testCase`(with required: true) fail, the whole test considered as `FAILED`. 
+
 Otherwise, considered as `SUCCEEDED`.
 
 ### TESTCASE EXAMPLE
@@ -43,7 +46,7 @@ It has two modes. `TestInDeployment` and `TestInEvent`.
 When Tester `FAILED`, stack deployment will fail, and stack rollback will proceed.
 You can use it for neccessary integration test before deployment done.
 
-It offers optional properties, logGroup(put logs about the test result).
+It offers optional properties, logGroup(Log test result automatically in each test).
 
 ```
 new TestOnDeployment(this, 'TestOnDeployment', {
@@ -107,9 +110,9 @@ new TestOnDeployment(this, 'TestOnDeployment', {
 `TestOnEvent` do test in scheduled date(using aws_events.Schedule).
 You can use it for regular tests in specific time.
 
-It offers optional properties, logGroup(put logs about the test result), 
-snsTopic(publish when test done), 
-snsTopicWhenError(publish when test could not finished because of an Error(ex. TIMED_OUT)).
+It offers optional properties, logGroup(Log test result automatically in each test), 
+snsTopic(Publish when test done), 
+snsTopicWhenError(Publish when test could not finished because of an Error(ex. TIMED_OUT)).
 
 ```
 new TestOnEvent(this, 'TestOnEvent', {
