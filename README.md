@@ -1,5 +1,5 @@
 # AWS CDK TESTER (CDK CUSTOM CONSTRUCT)
-It's Custom Construct internally using StepFunctions and test things with lambda functions.
+It's Custom Construct internally using StepFunctions and it's for test things with lambda functions.
 
 Tester execute multiple `testCase`s in parallel at once.
 
@@ -42,7 +42,7 @@ testCases: [
 It has two modes. `TestInDeployment` and `TestInEvent`.
 
 ## TestOnDeployment
-`TestOnDeployment` do test in stack deployment(using custom resource).
+`TestOnDeployment` do test in stack deployment(Internally using stepfunctions, lambdas, custom-resource).
 When Tester `FAILED`, stack deployment will fail, and stack rollback will proceed.
 You can use it for neccessary integration test before deployment done.
 
@@ -107,7 +107,7 @@ new TestOnDeployment(this, 'TestOnDeployment', {
 ```
 
 ## TestOnEvent
-`TestOnEvent` do test in scheduled date(using aws_events.Schedule).
+`TestOnEvent` do test in scheduled date(Internally using stepfunctions, lambdas, eventbridge scheduler, custom-resource).
 You can use it for regular tests in specific time.
 
 It offers optional properties, logGroup(Log test result automatically in each test), 
