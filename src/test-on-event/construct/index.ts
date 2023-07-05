@@ -73,7 +73,7 @@ export class TestOnEvent extends Construct {
 
       const testerStateMachine = new Tester(this, 'Tester', { testCases: props.testCases, totalTimeout: props.totalTimeout }).stateMachine;
 
-      const failExecuteTester = new aws_stepfunctions.Pass(this, 'Fail-ExecuteTester', {
+      const errorExecuteTester = new aws_stepfunctions.Pass(this, 'Error-ExecuteTester', {
          parameters: { Output: aws_stepfunctions.JsonPath.stringToJson(aws_stepfunctions.JsonPath.stringAt('$.Cause')) },
          outputPath: '$.Output',
       });
@@ -82,7 +82,7 @@ export class TestOnEvent extends Construct {
          stateMachine: testerStateMachine,
          integrationPattern: aws_stepfunctions.IntegrationPattern.RUN_JOB,
          taskTimeout: props.totalTimeout ? aws_stepfunctions.Timeout.duration(props.totalTimeout.plus(Duration.minutes(2))) : undefined,
-      }).addCatch(failExecuteTester);
+      }).addCatch(errorExecuteTester);
 
       const choiceJudgeTester = new aws_stepfunctions.Choice(this, 'Choice-JudgeTester')
          .when(
@@ -102,7 +102,7 @@ export class TestOnEvent extends Construct {
 
       const parallelAfterTester =
          props.logGroup || props.snsTopic ? new aws_stepfunctions.Parallel(this, 'AfterTester', { resultPath: aws_stepfunctions.JsonPath.DISCARD }) : undefined;
-      if (parallelAfterTester) failExecuteTester.next(parallelAfterTester);
+      if (parallelAfterTester) errorExecuteTester.next(parallelAfterTester);
 
       if (parallelAfterTester && (props.snsTopic || props.snsTopicWhenError)) {
          parallelAfterTester.branch(

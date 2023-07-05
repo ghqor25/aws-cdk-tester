@@ -45,7 +45,7 @@ export class TestOnDeployment extends Construct {
 
       const testerStateMachine = new Tester(this, 'Tester', { testCases: props.testCases, totalTimeout: totalTimeOut }).stateMachine;
 
-      const failExecuteTester = new aws_stepfunctions.Pass(this, 'Fail-ExecuteTester', {
+      const errorExecuteTester = new aws_stepfunctions.Pass(this, 'Error-ExecuteTester', {
          parameters: { Output: aws_stepfunctions.JsonPath.stringToJson(aws_stepfunctions.JsonPath.stringAt('$.Cause')) },
          outputPath: '$.Output',
       });
@@ -54,7 +54,7 @@ export class TestOnDeployment extends Construct {
          stateMachine: testerStateMachine,
          integrationPattern: aws_stepfunctions.IntegrationPattern.RUN_JOB,
          taskTimeout: aws_stepfunctions.Timeout.duration(totalTimeOut.plus(Duration.minutes(2))),
-      }).addCatch(failExecuteTester);
+      }).addCatch(errorExecuteTester);
 
       const choiceJudgeTester = new aws_stepfunctions.Choice(this, 'Choice-JudgeTester')
          .when(
@@ -73,7 +73,7 @@ export class TestOnDeployment extends Construct {
          .afterwards();
 
       const parallelAfterTester = new aws_stepfunctions.Parallel(this, 'AfterTester', { resultPath: aws_stepfunctions.JsonPath.DISCARD });
-      failExecuteTester.next(parallelAfterTester);
+      errorExecuteTester.next(parallelAfterTester);
 
       const taskResponseCloudformation = new aws_stepfunctions_tasks.LambdaInvoke(this, 'Task-ResponseCloudformation', {
          lambdaFunction: getOrCreateLambdaFunction(this, `${classId}-ResponseCloudformation-Lambda-zmb9WE`, {
