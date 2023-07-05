@@ -36,8 +36,8 @@ It has two modes. `TestInDeployment` and `TestInEvent`.
 
 ## TestOnDeployment
 `TestOnDeployment` do test in stack deployment(Internally using stepfunctions, lambdas, custom-resource). \
-When the test has `FAILED`, stack deployment will fail, and stack rollback will proceed. \
-You can use it for neccessary integration test before deployment done.
+When the test has `FAILED`, stack deployment will be failed, and the stack will be rollbacked. \
+You can use it for neccessary integration test during stack deployment.
 
 It offers optional properties, logGroup(Log test result automatically in each test).
 
@@ -105,7 +105,7 @@ You can use it for regular tests in specific time.
 
 It offers optional properties, logGroup(Log test result automatically in each test), \
 snsTopic(Publish when test done), \
-snsTopicWhenError(Publish when test could not finished because of an Error(ex. TIMED_OUT)).
+snsTopicWhenError(Publish when test could not finished because of an error(ex. TIMED_OUT)).
 
 ```
 new TestOnEvent(this, 'TestOnEvent', {
