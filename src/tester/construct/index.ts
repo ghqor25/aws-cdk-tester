@@ -107,7 +107,7 @@ export class Tester extends Construct {
                      }),
                   );
                else throw new Error('Index error. It should not happen. Please let me know.');
-            }, (testCase.input ? new aws_stepfunctions.Pass(this, `Input-${testCase.id}`, { parameters: testCase.input }) : undefined) as unknown as aws_stepfunctions.INextable & aws_stepfunctions.IChainable),
+            }, (testCase.input ? new aws_stepfunctions.Pass(this, `Input-${testCase.id}`, { parameters: { body: testCase.input } }) : undefined) as unknown as aws_stepfunctions.INextable & aws_stepfunctions.IChainable),
          ),
       );
 
