@@ -1,18 +1,18 @@
 # AWS CDK TESTER (CDK CUSTOM CONSTRUCT)
 It's Custom Construct internally using StepFunctions and it's for test things with lambda functions.
 
-Tester execute multiple `testCase`s in parallel at once.  
-Each `testCase` has  multiple `step`s(1 step = 1 lambda function) in sequential
-(When lambda return any value, it will be passed as an event to next step's lambda). 
+Tester execute multiple `testCase`s in parallel at once. \
+Each `testCase` has  multiple `step`s(1 step = 1 lambda function) in sequential \
+(When lambda return any value, it will be passed as `event.body` to next step's lambda). 
 
-When lambda function throw error(like assertion error), the `testCase` is considered as `fail`.  
+When lambda function throws error, the `testCase` is considered as `fail`. \
 When the `testCase`'s steps are all passed(do not throw any error), the `testCase` is considered as `pass`.
 
-So, When 1 or more `testCase`(with required: true) fail, the whole test considered as `FAILED`.  
+So, When 1 or more `testCase`(with required: true) got `fail`, the whole test considered as `FAILED`. \
 Otherwise, It will be considered as `SUCCEEDED`.
 
 ### TESTCASE EXAMPLE
-Step1. Publish Sns (In lambda, return expected value that should be put into Dynamodb. It will be passed to Step2's lambda function as an event input.)  
+Step1. Publish Sns (In lambda, return expected value that should be put into Dynamodb. It will be passed to Step2's lambda function as `event.body`.) \
 Step2. Check if Dynamodb item has correctly put within 5 seconds.(use any assertion library in lambda.)
 
 ```
@@ -32,13 +32,11 @@ testCases: [
    ],
 ```
 
-
-
 It has two modes. `TestInDeployment` and `TestInEvent`.
 
 ## TestOnDeployment
-`TestOnDeployment` do test in stack deployment(Internally using stepfunctions, lambdas, custom-resource).
-When the test has `FAILED`, stack deployment will fail, and stack rollback will proceed.
+`TestOnDeployment` do test in stack deployment(Internally using stepfunctions, lambdas, custom-resource). \
+When the test has `FAILED`, stack deployment will fail, and stack rollback will proceed. \
 You can use it for neccessary integration test before deployment done.
 
 It offers optional properties, logGroup(Log test result automatically in each test).
@@ -102,11 +100,11 @@ new TestOnDeployment(this, 'TestOnDeployment', {
 ```
 
 ## TestOnEvent
-`TestOnEvent` do test in scheduled date(Internally using stepfunctions, lambdas, eventbridge scheduler, custom-resource).
+`TestOnEvent` do test in scheduled date(Internally using stepfunctions, lambdas, eventbridge scheduler, custom-resource). \
 You can use it for regular tests in specific time.
 
-It offers optional properties, logGroup(Log test result automatically in each test), 
-snsTopic(Publish when test done), 
+It offers optional properties, logGroup(Log test result automatically in each test), \
+snsTopic(Publish when test done), \
 snsTopicWhenError(Publish when test could not finished because of an Error(ex. TIMED_OUT)).
 
 ```
