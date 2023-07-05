@@ -22,8 +22,8 @@ export interface TestOnDeploymentProps extends Pick<TesterProps, 'testCases'> {
     */
    enabled?: boolean;
    /**
-    * Overall timeout.
-    * Recommend to set timeout with your test estimated time, because it affects stack deployment time.
+    * Overall timeout. \
+    * Recommend to set timeout with your test's estimated time, because it affects stack deployment time.
     * @default Duration.hours(1)
     */
    totalTimeout?: Duration;
@@ -34,8 +34,8 @@ export interface TestOnDeploymentProps extends Pick<TesterProps, 'testCases'> {
 }
 
 /**
- * Do test on stack deployment.
- * If the test has FAILED, the stack will be ROLLBACK.
+ * Do test during stack deployment.
+ * If the test has `FAILED`, the stack will be ROLLBACK.
  */
 export class TestOnDeployment extends Construct {
    constructor(scope: Construct, id: string, props: TestOnDeploymentProps) {

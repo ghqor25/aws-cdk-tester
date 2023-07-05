@@ -34,7 +34,7 @@ interface TestOnEventSnsEventDefault {
  */
 export interface TestOnEventSnsEvent extends TestOnEventOutput, TestOnEventSnsEventDefault {}
 /**
- * Sns publish message body when error occur(ex. TIMED_OUT).
+ * Sns publish message body when error occured(ex. TIMED_OUT).
  */
 export interface TestOnEventWhenErrorSnsEvent extends TestOnEventSnsEventDefault {
    status: 'FAILED' | 'TIMED_OUT';
@@ -59,7 +59,7 @@ export interface TestOnEventProps extends Pick<TesterProps, 'testCases'> {
     */
    snsTopic?: aws_sns.ITopic;
    /**
-    * If set, it will publish when error occur(ex. TIMED_OUT).
+    * If set, it will publish when error occured(ex. TIMED_OUT).
     */
    snsTopicWhenError?: aws_sns.ITopic;
 }
