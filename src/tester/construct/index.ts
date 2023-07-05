@@ -7,44 +7,41 @@ export interface TesterOutput extends AggregationResponse {}
 
 export interface TestCase {
    /**
-    * Identifier of testCase. Should be unique in all defined testCases.
-    *
+    * Identifier of testCase. Should be unique in all defined testCases. \
     * Recommend to name it recognizable, so you can know which test is.
     */
    id: string;
    /**
-    * Steps in a single test case.
+    * Steps in a single testCase.
     */
    steps: {
       /**
-       * If lambda throws any error thrown(like assertion error), the test case will result in `fail`.
-       *
-       * If lambda returns anything, returned payload will be passed to next step's lambda event input.
+       * If lambda throws any error, the testCase will result in `fail`. \
+       * If lambda returns anything, returned payload will be passed to next step's lambda as `event.body`.
        */
       lambdaFunction: aws_lambda.IFunction;
       /**
-       * Interval before invoking this step.
+       * Interval before invoking this step. \
        * If not set, the step will be invoked immediately.
        */
       interval?: Duration;
    }[];
    /**
-    * If this case is required to succeed, set true.
-    *
-    * If set false, the test will not be FAILED even if this testCase is `fail`
+    * If this testCase is necessary to succeed, set true. \
+    * If set false, the test will not be `FAILED` even if this testCase is `fail`
     * @default true
     */
    required?: boolean;
    /**
-    * If you set input variables, it will pass to first step's lambda function as an event input.
+    * If you set input variables, it will be passed to first step's lambda as `event.body`.
     */
    input?: Record<string, any>;
 }
 
 export interface TesterProps {
    /**
-    * Test cases will be tested in parallel.
-    * Each test case will be result in `pass` or `fail`.
+    * TestCases will be tested in parallel. \
+    * Each testCase results `pass` or `fail`.
     */
    testCases: TestCase[];
    /**
@@ -55,7 +52,7 @@ export interface TesterProps {
 }
 
 /**
- * Internal tester, do test and aggregate results.
+ * Internal tester. It tests and aggregates the result.
  * @internal
  */
 export class Tester extends Construct {
@@ -77,7 +74,7 @@ export class Tester extends Construct {
 
                const taskTest = new aws_stepfunctions_tasks.LambdaInvoke(this, `Test-${nameCurrent}`, {
                   lambdaFunction: stepInfo.lambdaFunction,
-                  outputPath: '$.Payload',
+                  resultSelector: { 'body.$': '$.Payload' },
                }).addCatch(
                   new aws_stepfunctions.Pass(this, `Fail-${nameCurrent}`, {
                      parameters: {
@@ -103,7 +100,7 @@ export class Tester extends Construct {
                   return chainCurrent.next(
                      new aws_stepfunctions.Pass(this, `Succeed-${nameCurrent}`, {
                         parameters: {
-                           'body.$': '$',
+                           'body.$': '$.body',
                            id: testCase.id,
                            status: 'pass',
                         },
